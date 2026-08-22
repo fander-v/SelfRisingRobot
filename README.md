@@ -1,48 +1,56 @@
 # SelfRisingRobot
 
-2軸サーボの起き上がりロボット "poco" です。
+> **Traducción al español.** Este es un fork traducido del repositorio original
+> [homemadegarbage/SelfRisingRobot](https://github.com/homemadegarbage/SelfRisingRobot),
+> creado por HomeMadeGarbage. Todo el crédito del diseño, el código y el trabajo
+> original corresponde al autor original. Aquí solo se tradujo la documentación
+> y los comentarios del japonés al español; el código y los modelos no se modificaron.
 
-MuJoCo上で強化学習した起き上がり動作を、M5Atom搭載の実機ロボットで動かします。
+"poco" es un robot de dos ejes con servos capaz de levantarse por sí solo.
 
-詳細記事:
+El movimiento de levantarse se aprende con aprendizaje por refuerzo en MuJoCo y luego
+se ejecuta en el robot físico, controlado por un M5Atom.
+
+Artículo detallado (en japonés):
 
 https://homemadegarbage.com/rl13
 
-## Contents
+## Contenido
 
-- `3Dmodel/` - 実機ロボット用の3Dプリントモデル
-- `RL/` - MuJoCoモデル、強化学習環境、学習済みPPOモデル
-- `Arduino/` - M5Atom用スケッチとエクスポート済みポリシーネットワーク
+- `3Dmodel/` - modelos para impresión 3D del robot físico
+- `RL/` - modelo de MuJoCo, entorno de aprendizaje por refuerzo y modelo PPO entrenado
+- `Arduino/` - sketch para M5Atom y la red de política ya exportada
 
-各フォルダ内の詳しい使い方は、それぞれのREADMEを参照してください。
+Para instrucciones detalladas de uso, consulta el README dentro de cada carpeta.
 
-## 3D Model
+## Modelo 3D
 
-`3Dmodel/` には実機製作用のSTLファイルを置いています。
+En `3Dmodel/` están los archivos STL para fabricar el robot físico.
 
 - `footP.stl`
 - `arm1P.stl`
 - `arm2P.stl`
 - `armhornP.stl`
 
-## Reinforcement Learning
+## Aprendizaje por refuerzo
 
-`RL/` にはシミュレーションと学習済みモデルを置いています。
+En `RL/` están la simulación y el modelo entrenado.
 
-主な内容:
+Contenido principal:
 
-- MuJoCoモデル
-- Gymnasium環境
-- Stable-Baselines3 PPOの学習済みモデル
-- 再生・評価スクリプト
+- modelo de MuJoCo
+- entorno de Gymnasium
+- modelo PPO entrenado con Stable-Baselines3
+- scripts de reproducción y evaluación
 
 ## Arduino
 
-`Arduino/` には実機制御用のM5Atomスケッチを置いています。
+En `Arduino/` está el sketch para M5Atom que controla el robot físico.
 
-主な内容:
+Contenido principal:
 
 - `robo03.ino`
 - `policy_network.h`
 
-`policy_network.h` は学習済みポリシーをCヘッダ化したもので、M5Atom上で起き上がり動作を実行するために使います。
+`policy_network.h` es la política entrenada convertida a una cabecera de C, y se usa
+para ejecutar el movimiento de levantarse en el M5Atom.

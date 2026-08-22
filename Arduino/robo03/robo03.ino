@@ -194,7 +194,7 @@ void get_gyro(){
 }
 
 
-//ブラウザ表示
+//Visualizacion en el navegador
 void handleRoot() {
   String temp ="<!DOCTYPE html> \n<html lang=\"ja\">";
   temp +="<head>";
@@ -476,7 +476,7 @@ void setup(){
 
   M5.IMU.Init();
 
-  //フルスケールレンジ
+  //Rango de fondo de escala
   M5.IMU.SetAccelFsr(M5.IMU.AFS_2G);
   M5.IMU.SetGyroFsr(M5.IMU.GFS_250DPS);
 
@@ -497,7 +497,7 @@ void setup(){
 }
 
 // =================================
-// LOOP (制御)
+// LOOP (control)
 // =================================
 void loop(){
   M5.update();

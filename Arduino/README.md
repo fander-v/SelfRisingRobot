@@ -1,46 +1,56 @@
 # robo03
 
-M5Atomで2自由度ロボットを制御し、学習済みポリシーで起き上がり動作を行うArduinoスケッチです。
+> **Traducción al español** del README original de
+> [homemadegarbage/SelfRisingRobot](https://github.com/homemadegarbage/SelfRisingRobot).
+> Autor original: HomeMadeGarbage.
 
-## Files
+Sketch de Arduino que controla un robot de 2 grados de libertad con un M5Atom y
+ejecuta el movimiento de levantarse usando la política entrenada.
 
-- `robo03/robo03.ino` - M5Atom用の制御スケッチ
-- `robo03/policy_network.h` - 学習済みポリシーをCヘッダ化したもの
+## Archivos
 
-`policy_network.h` は `robo03.ino` から読み込まれるため、必ず同じ `robo03` フォルダ内に置いてください。
+- `robo03/robo03.ino` - sketch de control para M5Atom
+- `robo03/policy_network.h` - la política entrenada convertida a cabecera de C
 
-## Required Libraries
+`policy_network.h` se incluye desde `robo03.ino`, así que debe estar siempre dentro de
+la misma carpeta `robo03`.
 
-Arduino IDEのライブラリマネージャなどで以下を入れてください。
+## Librerías necesarias
+
+Instálalas, por ejemplo, desde el Gestor de Librerías del IDE de Arduino:
 
 - M5Atom
 - Kalman
 - ESP32Servo
 
-ESP32ボード環境も必要です。
+También hace falta el entorno de placas ESP32.
 
-## Upload
+## Carga al dispositivo
 
-Arduino IDEで `robo03/robo03.ino` を開き、M5Atom向けにビルドして書き込んでください。
+Abre `robo03/robo03.ino` en el IDE de Arduino, compila para M5Atom y carga el programa.
 
-## Wi-Fi Control
+## Control por Wi-Fi
 
-起動するとM5AtomがWi-Fiアクセスポイントを作成します。
+Al encenderse, el M5Atom crea un punto de acceso Wi-Fi.
 
 - SSID: `robo1`
-- Password: `password`
+- Contraseña: `password`
 - URL: `http://192.168.42.1`
 
-ブラウザからアクセスすると、サーボの手動調整、起き上がり開始/停止、自動起き上がりのON/OFFを操作できます。
+Al entrar desde el navegador puedes ajustar los servos manualmente, iniciar y detener
+el movimiento de levantarse, y activar o desactivar el levantado automático.
 
-## Button
+## Botón
 
-M5Atom本体ボタンでも起き上がり動作を開始できます。
+El movimiento de levantarse también se puede iniciar con el botón del propio M5Atom.
 
-起き上がり中にボタンを押すと、起き上がり動作を停止して手動モードに戻ります。
+Si pulsas el botón mientras el robot se está levantando, el movimiento se detiene y se
+vuelve al modo manual.
 
-## Notes
+## Notas
 
-- サーボ1はGPIO 26、サーボ2はGPIO 32に接続する想定です。
-- サーボのオフセットとパルス幅はWeb画面から調整でき、Preferencesに保存されます。
-- `policy_network.h` は生成済みのポリシーネットワークです。別の学習結果を使う場合は、このファイルを差し替えてください。
+- Se asume que el servo 1 está conectado al GPIO 26 y el servo 2 al GPIO 32.
+- El offset y el ancho de pulso de los servos se ajustan desde la página web y se
+  guardan en Preferences.
+- `policy_network.h` es una red de política ya generada. Si quieres usar otro resultado
+  de entrenamiento, reemplaza este archivo.

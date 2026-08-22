@@ -1,26 +1,36 @@
 # robo1 getup PPO
 
-MuJoCo上の2自由度ロボット `robo1` が倒れた姿勢から起き上がるための学習済みPPOモデルです。
+> **Traducción al español** del README original de
+> [homemadegarbage/SelfRisingRobot](https://github.com/homemadegarbage/SelfRisingRobot).
+> Autor original: HomeMadeGarbage.
 
-## Files
+Modelo PPO entrenado para que el robot de 2 grados de libertad `robo1`, simulado en
+MuJoCo, se levante desde una postura caída.
 
-このリポジトリを動かすために必要なファイルは以下です。
+## Archivos
 
-- `robo1_getup_ppo.zip` - Stable-Baselines3 PPOの学習済みモデル
-- `robo1_env.py` - Gymnasium/MuJoCo環境
-- `robo1.xml` - MuJoCoモデル定義
-- `assets/` - `robo1.xml`が参照するSTLメッシュ
-- `play_robo1_policy.py` - 学習済みモデルの再生
-- `eval_robo1_policy.py` - 各倒立姿勢からの評価
-- `search_all_getup.py` - 各倒れ姿勢ごとの起き上がり軌道候補を探索し、`getup_reference.py` に反映するための `BEST_SEQ` を出力
-- `getup_reference.py` - 教師データ生成に使う、各倒れ姿勢ごとのサーボ目標角waypoint列
-- `scripted_getup.py` - `getup_reference.py` に定義した起き上がり軌道をMuJoCo viewerで再生確認
-- `pretrain_robo1_from_scripted.py` - `getup_reference.py` の軌道から観測と教師actionのペアを生成し、PPO方策を事前学習
-- `train_robo1.py` - PPOによる追加学習
-- `export_policy_header.py` - 学習済みモデルからArduino用Cヘッダを生成
-- `requirements.txt` - Python依存パッケージ
+Estos son los archivos necesarios para ejecutar el repositorio:
 
-## Setup
+- `robo1_getup_ppo.zip` - modelo PPO entrenado con Stable-Baselines3
+- `robo1_env.py` - entorno Gymnasium/MuJoCo
+- `robo1.xml` - definición del modelo de MuJoCo
+- `assets/` - mallas STL que referencia `robo1.xml`
+- `play_robo1_policy.py` - reproducción del modelo entrenado
+- `eval_robo1_policy.py` - evaluación desde cada postura caída
+- `search_all_getup.py` - busca trayectorias candidatas de levantado para cada postura
+  caída y emite el `BEST_SEQ` que luego se lleva a `getup_reference.py`
+- `getup_reference.py` - secuencias de waypoints con los ángulos objetivo de los servos
+  para cada postura caída, usadas para generar los datos de referencia (datos maestros)
+- `scripted_getup.py` - reproduce en el visor de MuJoCo la trayectoria de levantado
+  definida en `getup_reference.py` para comprobarla
+- `pretrain_robo1_from_scripted.py` - genera pares de observación y acción de referencia
+  a partir de las trayectorias de `getup_reference.py` y preentrena la política PPO
+- `train_robo1.py` - entrenamiento adicional con PPO
+- `export_policy_header.py` - genera la cabecera de C para Arduino a partir del modelo
+  entrenado
+- `requirements.txt` - dependencias de Python
+
+## Preparación del entorno
 
 ```powershell
 python -m venv .venv
@@ -28,13 +38,13 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Play
+## Reproducción
 
 ```powershell
 python play_robo1_policy.py
 ```
 
-特定の初期姿勢から再生する場合:
+Para reproducir desde una postura inicial concreta:
 
 ```powershell
 python play_robo1_policy.py --pose roll_pos
@@ -43,57 +53,60 @@ python play_robo1_policy.py --pose pitch_pos
 python play_robo1_policy.py --pose pitch_neg
 ```
 
-## Evaluate
+## Evaluación
 
 ```powershell
 python eval_robo1_policy.py
 ```
 
-## Training
+## Entrenamiento
 
-`getup_reference.py` に定義した起き上がり教師データから初期方策を事前学習します。
+Se preentrena una política inicial con los datos de referencia de levantado definidos en
+`getup_reference.py`.
 
-起き上がり軌道を再探索する場合は、以下を実行します。
+Si quieres volver a buscar las trayectorias de levantado, ejecuta:
 
 ```powershell
 python search_all_getup.py
 ```
-出力された `BEST_SEQ` または `REFERENCE_CANDIDATES` の配列を
-`getup_reference.py` の `getup_sequence_for_pose()` に反映します。
+
+Después lleva el arreglo `BEST_SEQ` (o `REFERENCE_CANDIDATES`) que se imprime a la
+función `getup_sequence_for_pose()` de `getup_reference.py`.
 
 
-教師データから初期方策を事前学習
+Preentrenamiento de la política inicial a partir de los datos de referencia:
 
 ```powershell
 python pretrain_robo1_from_scripted.py
 ```
 
-これにより `robo1_getup_ppo.zip` が生成されます。
+Con esto se genera `robo1_getup_ppo.zip`.
 
-続けてPPOで追加学習します。
+A continuación se sigue entrenando con PPO:
 
 ```powershell
 python train_robo1.py --model-in robo1_getup_ppo.zip --timesteps 200000 --n-envs 6 --model-out robo1_getup_ppo
 ```
 
-ゼロからPPO学習する場合は `--model-in` を省略します。
+Para entrenar con PPO desde cero, omite `--model-in`:
 
 ```powershell
 python train_robo1.py --timesteps 200000 --n-envs 6 --model-out robo1_getup_ppo
 ```
 
-## Export for Arduino
+## Exportación para Arduino
 
-学習済みモデルから `policy_network.h` を生成します。
+Genera `policy_network.h` a partir del modelo entrenado:
 
 ```powershell
 python export_policy_header.py robo1_getup_ppo.zip -o policy_network.h
 ```
 
-生成した `policy_network.h` をArduinoスケッチ側に配置して使用します。
+Coloca el `policy_network.h` generado junto al sketch de Arduino para usarlo.
 
-## Notes
+## Notas
 
-- `robo1_getup_ppo.zip`は`robo1.xml`と`robo1_env.py`の環境定義に依存しています。
-- `assets/`内のSTLファイルがないとMuJoCoモデルを読み込めません。
-- 実行はリポジトリ直下で行ってください。
+- `robo1_getup_ppo.zip` depende de la definición del entorno en `robo1.xml` y
+  `robo1_env.py`.
+- Sin los archivos STL de `assets/` no se puede cargar el modelo de MuJoCo.
+- Ejecuta los scripts desde la raíz del repositorio.
